@@ -1,0 +1,476 @@
+<!-- public/third.html -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Crow Cage - Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Подключение шрифтов -->
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Light&family=Inknut+Antiqua&display=swap" rel="stylesheet">
+  <style>
+    /* Общие стили */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: 'Rubik Light', sans-serif;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Верхняя граница с градиентом */
+    .top-gradient {
+      position: absolute;
+      top: 60px;
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(90deg, #252525 0%, #272727 100%);
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 10;
+    }
+
+    /* Верхняя панель с аватаркой и именем */
+    .top-panel {
+      position: relative;
+      display: flex;
+      align-items: center;
+      color: #fff;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-image: url('avatar.png'); /* Замените на путь к аватарке */
+      background-size: cover;
+      background-position: center;
+      margin-right: 10px;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-size: 16px;
+      font-family: 'Rubik Light', sans-serif;
+    }
+
+    .user-username {
+      font-size: 12px;
+      color: #ccc;
+    }
+
+    /* Центральный контент */
+    .central-content {
+      margin-top: 80px; /* Отступ от верхней границы */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    #logo {
+      position: relative;
+      top: 90px;
+      width: 150px;
+      height: 150px;
+      background-image: url('logo.png'); /* Замените на путь к вашему логотипу */
+      background-size: contain;
+      background-repeat: no-repeat;
+      margin-bottom: 20px;
+    }
+
+    .crow-text {
+      position: relative;
+      top: 95px;
+      font-family: 'Rubik Wet Paint';
+      font-size: 35px;
+      margin-bottom: 10px;
+    }
+
+    .balance-text {
+      position: relative;
+      top: 95px;
+      font-family: 'Rubik Wet Paint';
+      font-size: 75px;
+      margin-bottom: 30px;
+    }
+
+    /* Кнопка Boost */
+    #boost-button {
+      position: relative;
+      top: 350px;
+      width: 250px;
+      height: 60px;
+      background-color: #FF1E1D;
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      font-family: 'Inknut Antiqua', serif;
+      font-size: 25px;
+      cursor: pointer;
+      margin-bottom: -10px;
+      z-index: 5;
+    }
+
+    /* Панель навигации */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      background-color: rgba(21, 21, 21, 0.8);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      font-family: 'Rubik Light', sans-serif;
+      font-size: 15px;
+      box-sizing: border-box;
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #969696;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .nav-item.active {
+      color: #ffffff;
+    }
+
+
+    /* Цветные кружки под навигационной панелью */
+    .background-circles {
+      position: fixed;
+      bottom: 0px; /* Над панелью навигации */
+      width: 100%;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      position: absolute;
+      background: rgba(255, 0, 0, 0.3);
+      animation: move 20s linear infinite;
+      filter: blur(50px);
+    }
+
+    .circle:nth-child(2) {
+      background: rgba(0, 255, 0, 0.3);
+      animation-delay: 5s;
+    }
+
+    .circle:nth-child(3) {
+      background: rgba(0, 0, 255, 0.3);
+      animation-delay: 10s;
+    }
+
+    @keyframes move {
+      0% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-50px) scale(1.5);
+      }
+      100% {
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Попап Boost */
+    .modal {
+      display: none; /* Скрыто по умолчанию */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.75);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .modal-content {
+      background-color: #1E1E1E;
+      padding: 20px;
+      border-radius: 15px;
+      width: 80%;
+      max-width: 400px;
+      position: relative;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      color: #fff;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 25px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .boost-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #2A2A2A;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .boost-option:hover {
+      background-color: #3A3A3A;
+    }
+
+    .option-text {
+      font-family: 'Rubik Light', sans-serif;
+      font-size: 20px;
+    }
+
+    .option-price {
+      font-family: 'Rubik Light', sans-serif;
+      font-size: 18px;
+      color: #FFD700; /* Золото для цены */
+    }
+  </style>
+</head>
+<body>
+  <!-- Верхняя граница с градиентом -->
+  <div class="top-gradient">
+    <div class="top-panel">
+      <div class="avatar"></div>
+      <div class="user-info">
+        <div class="user-name" id="user-name">Имя пользователя</div>
+        <div class="user-username" id="user-username">@username</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Центральный контент -->
+  <div class="central-content">
+    <div id="logo"></div>
+    <div class="crow-text">$crow</div>
+    <div class="balance-text" id="balance">0</div>
+    <button id="boost-button">Boost</button>
+  </div>
+
+  <!-- Панель навигации -->
+  <div class="nav-bar">
+    <div class="nav-item active" id="nav-home">
+      <img src="Vector 7.png" alt="Home" width="40" height="40"> <!-- Замените на путь к иконке -->
+      <span>Home</span>
+    </div>
+    <div class="nav-item" id="nav-earn">
+      <img src="Vector-2.png" alt="Earn" width="40" height="40"> <!-- Замените на путь к иконке -->
+      <span>Earn</span>
+    </div>
+    <div class="nav-item" id="nav-bord">
+      <img src="Vector.png" alt="Bord" width="40" height="40"> <!-- Замените на путь к иконке -->
+      <span>Bord</span>
+    </div>
+    <div class="nav-item" id="nav-frens">
+      <img src="Vector-1.png" alt="Frens" width="50" height="40"> <!-- Замените на путь к иконке -->
+      <span>Frens</span>
+    </div>
+  </div>
+
+  <!-- Цветные кружки под навигационной панелью -->
+  <div class="background-circles">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+  </div>
+
+  <!-- Попап Boost -->
+  <div class="modal" id="boost-modal">
+    <div class="modal-content">
+      <span class="close-button" id="close-modal">&times;</span>
+      <h2 style="text-align: center; margin-bottom: 20px;">Выберите опцию Boost</h2>
+      <div class="boost-option" data-multiplier="2" data-price="100">
+        <span class="option-text">x2</span>
+        <span class="option-price">100 звёзд</span>
+      </div>
+      <div class="boost-option" data-multiplier="5" data-price="450">
+        <span class="option-text">x5</span>
+        <span class="option-price">450 звёзд</span>
+      </div>
+      <div class="boost-option" data-multiplier="10" data-price="800">
+        <span class="option-text">x10</span>
+        <span class="option-price">800 звёзд</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Telegram Web App JS SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram.WebApp;
+
+    // Отключение кнопки назад
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+      history.go(1);
+    };
+
+    // Включение полноэкранного режима
+    tg.expand();
+    tg.requestFullscreen();
+
+    // Получение user_id из URL
+    const user_id = new URLSearchParams(window.location.search).get('user_id');
+
+    // Элементы страницы
+    const balanceElement = document.getElementById('balance');
+    const userNameElement = document.getElementById('user-name');
+    const userUsernameElement = document.getElementById('user-username');
+    const boostButton = document.getElementById('boost-button');
+    const modal = document.getElementById('boost-modal');
+    const closeModalButton = document.getElementById('close-modal');
+    const boostOptions = document.querySelectorAll('.boost-option');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    // Функция для получения данных пользователя
+    async function fetchUserData() {
+      try {
+        const response = await fetch(`/user-data?user_id=${user_id}`);
+        if (!response.ok) {
+          throw new Error('Не удалось получить данные пользователя.');
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Функция для обновления баланса на странице
+    function updateBalance(balance) {
+      balanceElement.textContent = `Баланс: ${balance}`;
+    }
+
+    // Функция для отображения информации о пользователе
+    function displayUserInfo(data)  
+{
+      userNameElement.textContent = data.name || 'Имя пользователя';
+      userUsernameElement.textContent = data.username ? `@${data.username}` : '@username';
+      updateBalance(data.balance || 0);
+    }
+
+    // Инициализация страницы
+    async function init() {
+      const userData = await fetchUserData();
+      if (userData) {
+        displayUserInfo(userData);
+      }
+
+      // Начало поллинга для обновления баланса
+      setInterval(async () => {
+        const updatedData = await fetchUserData();
+        if (updatedData) {
+          displayUserInfo(updatedData);
+        }
+      }, 5000); // каждые 5 секунд
+    }
+
+    init();
+
+    // Обработка клика на кнопку Boost
+    boostButton.addEventListener('click', () => {
+      modal.style.display = 'flex';
+    });
+
+    // Обработка клика на кнопку закрытия попапа
+    closeModalButton.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    // Обработка клика вне попапа для его закрытия
+    window.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Обработка выбора опции Boost
+    boostOptions.forEach(option => {
+      option.addEventListener('click', async () => {
+        const multiplier = parseInt(option.getAttribute('data-multiplier'), 10);
+        const price = parseInt(option.getAttribute('data-price'), 10);
+
+        // Отправка запроса на сервер для отправки инвойса
+        try {
+          const response = await fetch('/request-boost', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user_id: user_id,
+              multiplier: multiplier,
+              price: price,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Не удалось отправить запрос на Boost.');
+          }
+
+          alert('Инвойс отправлен через Telegram. Пожалуйста, завершите платёж.');
+
+          modal.style.display = 'none';
+        } catch (error) {
+          console.error(error);
+          alert('Произошла ошибка при отправке инвойса.');
+        }
+      });
+    });
+
+    // Обработка навигационных кнопок
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        // Удаление класса active у всех навигационных пунктов
+        navItems.forEach(nav => nav.classList.remove('active'));
+        // Добавление класса active к выбранному пункту
+        item.classList.add('active');
+
+        // Здесь можно добавить переключение контента или другие действия
+        const selected = item.querySelector('span').textContent;
+        alert(`Вы выбрали: ${selected}`);
+      });
+    });
+  </script>
+</body>
+</html>
+
