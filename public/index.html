@@ -92,6 +92,16 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
     const tg = window.Telegram.WebApp;
+    
+    // Отключение кнопки назад
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+      history.go(1);
+    };
+
+    // Вход в полноэкранный режим
+    tg.expand();
+    tg.requestFullscreen();
 
     // Проверка на десктоп
     if (tg.platform === 'desktop') {
