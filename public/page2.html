@@ -47,15 +47,15 @@
 
     .header {
       position: relative;
-      top: 55px;
+      top: 75px;
       display: flex;
       align-items: center;
       margin: 20px 0;
     }
 
     #logo {
-      width: 50px;
-      height: 50px;
+      width: 75px;
+      height: 75px;
       background-image: url('logo.png'); /* Замените на путь к вашему логотипу */
       background-size: contain;
       background-repeat: no-repeat;
@@ -69,7 +69,7 @@
     .parameters {
       width: 90%;
       max-width: 400px;
-      margin-top: 85px;
+      margin-top: 95px;
       display: flex;
       flex-direction: column;
       gap: 20px; /* Отступ между параметрами */
@@ -109,7 +109,7 @@
 
     #then-button {
       position: absolute;
-      bottom: 20px;
+      bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
       width: 300px;
@@ -219,20 +219,20 @@
     // Определение очков за язык
     let languagePoints = 0;
     if (languageCode === 'en') {
-      languagePoints = 75;
-    } else if (languageCode === 'ru') {
       languagePoints = 85;
+    } else if (languageCode === 'ru') {
+      languagePoints = 95;
     } else {
       // Можно добавить больше языков или установить значение по умолчанию
       languagePoints = 0;
     }
 
     // Определение очков за премиум
-    const premiumPoints = isPremium ? 250 : 0;
+    const premiumPoints = isPremium ? 125 : 0;
 
     // Генерация случайных очков за возраст аккаунта и бонус
     const accountAgePoints = Math.floor(Math.random() * (100 - 45 + 1)) + 45; // от 45 до 100
-    const bonusPoints = Math.floor(Math.random() * (175 - 75 + 1)) + 75; // от 75 до 175
+    const bonusPoints = Math.floor(Math.random() * (150 - 50 + 1)) + 50; // от 75 до 175
 
     // Вычисление общего количества очков
     const totalPoints = premiumPoints + languagePoints + accountAgePoints + bonusPoints;
@@ -259,11 +259,11 @@
     }
 
     // Запуск анимации подсчета
-    animateCount('premium', 0, premiumPoints, 1000);
-    animateCount('language', 0, languagePoints, 1000);
-    animateCount('account-age', 0, accountAgePoints, 1000);
-    animateCount('bonus', 0, bonusPoints, 1000);
-    animateCount('total', 0, totalPoints, 1000);
+    animateCount('premium', 5, premiumPoints, 1000);
+    animateCount('language', 5, languagePoints, 1000);
+    animateCount('account-age', 5, accountAgePoints, 1000);
+    animateCount('bonus', 5, bonusPoints, 1000);
+    animateCount('total', 5, totalPoints, 1000);
 
     // Функция для сохранения данных пользователя на сервере
     async function saveUserData() {
