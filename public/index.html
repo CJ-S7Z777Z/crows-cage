@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Crow Cage Mini App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Подключение шрифта Rubik Wet Paint -->
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&display=swap" rel="stylesheet">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: 'Rubik Wet Paint';
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #000000;
+    }
+
+    #logo {
+      width: 235px;
+      height: 235px;
+      background-image: url('logo.png'); /* Замените на путь к вашему логотипу */
+      background-size: contain;
+      background-repeat: no-repeat;
+      margin-bottom: 50px;
+    }
+
+    .welcome-text {
+      text-align: center;
+      font-size: 45px;
+      margin-bottom: 25px;
+      color: #ffffff;
+    }
+
+    .description-text {
+      text-align: center;
+      font-size: 45px;
+      margin-bottom: 50px;
+      color: #ffffff;
+    }
+
+    #start-button {
+      font-family: 'Rubik Wet Paint';
+      width: 370px;
+      height: 60px;
+      background-color: rgb(255, 255, 255);
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0px 7px 0.6px #ffffffa1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      color: #000;
+      font-size: 25px;
+    }
+
+    /* Заглушка для десктопа */
+    #desktop-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+      display: none; /* Скрыто по умолчанию */
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div id="desktop-overlay">
+    <p>Мини-приложение не поддерживается на компьютерах. Пожалуйста, используйте мобильное устройство для доступа.</p>
+  </div>
+
+  <div id="logo"></div>
+  <div class="welcome-text">WELCOME</div>
+  <div class="description-text">This is Crow Cage</div>
+  <button id="start-button" href="page2.html">START</button>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram.WebApp;
+
+    // Проверка на десктоп
+    if (tg.platform === 'web') {
+      // Показать заглушку
+      document.body.innerHTML = `
+        <div id="desktop-overlay" style="
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0,0,0,0.8);
+          color: #fff;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          padding: 20px;
+          box-sizing: border-box;
+        ">
+          <p>Мини-приложение не поддерживается на компьютерах. Пожалуйста, используйте мобильное устройство для доступа.</p>
+        </div>
+      `;
+    } else {
+      // Обработка кнопки START
+      document.getElementById('start-button').addEventListener('click', () => {
+        // Переход на вторую страницу
+        window.location.href = 'page2.html';
+      });
+    }
+  </script>
+</body>
+</html>
