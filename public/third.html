@@ -264,13 +264,45 @@
       font-size: 18px;
       color: #FFD700; /* Золото для цены */
     }
+
+    /* Адаптивные стили */
+    @media (max-width: 600px) {
+      .crow-text {
+        font-size: 28px;
+      }
+
+      .balance-text {
+        font-size: 25px;
+      }
+
+      #boost-button {
+        width: 80%;
+        font-size: 20px;
+      }
+
+      .nav-bar {
+        height: 70px;
+      }
+
+      .nav-item {
+        font-size: 13px;
+      }
+
+      .option-text {
+        font-size: 18px;
+      }
+
+      .option-price {
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 <body>
   <!-- Верхняя граница с градиентом -->
   <div class="top-gradient">
     <div class="top-panel">
-      <div class="avatar"></div>
+      <div class="avatar" id="avatar"></div>
       <div class="user-info">
         <div class="user-name" id="user-name">Имя пользователя</div>
         <div class="user-username" id="user-username">@username</div>
@@ -282,7 +314,7 @@
   <div class="central-content">
     <div id="logo"></div>
     <div class="crow-text">$crow</div>
-    <div class="balance-text" id="balance">0</div>
+    <div class="balance-text" id="balance">Баланс: 0</div>
     <button id="boost-button">Boost</button>
   </div>
 
@@ -320,15 +352,15 @@
       <h2 style="text-align: center; margin-bottom: 20px;">Выберите опцию Boost</h2>
       <div class="boost-option" data-multiplier="2" data-price="100">
         <span class="option-text">x2</span>
-        <span class="option-price">100 звёзд</span>
+        <span class="option-price">100 ⭐</span>
       </div>
       <div class="boost-option" data-multiplier="5" data-price="450">
         <span class="option-text">x5</span>
-        <span class="option-price">450 звёзд</span>
+        <span class="option-price">450 ⭐</span>
       </div>
       <div class="boost-option" data-multiplier="10" data-price="800">
         <span class="option-text">x10</span>
-        <span class="option-price">800 звёзд</span>
+        <span class="option-price">800 ⭐</span>
       </div>
     </div>
   </div>
@@ -338,7 +370,7 @@
   <script>
     const tg = window.Telegram.WebApp;
 
-    // Отключение кнопки назад
+    // Отключение кнопки назад и предотвращение закрытия при пролистывании
     history.pushState(null, null, location.href);
     window.onpopstate = function () {
       history.go(1);
@@ -349,12 +381,14 @@
     tg.requestFullscreen();
 
     // Получение user_id из URL
-    const user_id = new URLSearchParams(window.location.search).get('user_id');
+    const urlParams = new URLSearchParams(window.location.search);
+    const user_id = urlParams.get('user_id');
 
     // Элементы страницы
     const balanceElement = document.getElementById('balance');
     const userNameElement = document.getElementById('user-name');
     const userUsernameElement = document.getElementById('user-username');
+    const avatarElement = document.getElementById('avatar');
     const boostButton = document.getElementById('boost-button');
     const modal = document.getElementById('boost-modal');
     const closeModalButton = document.getElementById('close-modal');
@@ -372,6 +406,8 @@
         return data;
       } catch (error) {
         console.error(error);
+        alert('Ошибка при получении данных пользователя.');
+        return null;
       }
     }
 
@@ -381,11 +417,17 @@
     }
 
     // Функция для отображения информации о пользователе
-    function displayUserInfo(data)  
-{
+    function displayUserInfo(data) {
       userNameElement.textContent = data.name || 'Имя пользователя';
       userUsernameElement.textContent = data.username ? `@${data.username}` : '@username';
       updateBalance(data.balance || 0);
+
+      // Установка аватарки, если доступна
+      if (data.avatar_url) {
+        avatarElement.style.backgroundImage = `url('${data.avatar_url}')`;
+      } else {
+        avatarElement.style.backgroundImage = `url('default-avatar.png')`; // Замените на путь к дефолтной аватарке
+      }
     }
 
     // Инициализация страницы
@@ -395,13 +437,13 @@
         displayUserInfo(userData);
       }
 
-      // Начало поллинга для обновления баланса
+      // Начало поллинга для обновления баланса каждые 5 секунд
       setInterval(async () => {
         const updatedData = await fetchUserData();
         if (updatedData) {
           displayUserInfo(updatedData);
         }
-      }, 5000); // каждые 5 секунд
+      }, 5000);
     }
 
     init();
@@ -473,4 +515,3 @@
   </script>
 </body>
 </html>
-
