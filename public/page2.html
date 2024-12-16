@@ -9,6 +9,7 @@
   <!-- Подключение шрифта Rubik Wet Paint -->
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&display=swap" rel="stylesheet">
   <style>
+    /* Общие стили */
     body, html {
       margin: 0;
       padding: 0;
@@ -17,16 +18,37 @@
       font-family: 'Rubik Wet Paint', cursive;
       background-color: #000;
       color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
       position: relative;
       overflow: hidden;
     }
 
+    /* Заглушка для десктопа */
+    #desktop-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 1000;
+      display: none; /* Скрыто по умолчанию */
+    }
+
     .header {
-      position: absolute;
-      top: 36px; /* Y = 36px */
-      left: 8px;  /* X = 8px */
       display: flex;
       align-items: center;
+      margin: 20px 0;
     }
 
     #logo {
@@ -39,29 +61,43 @@
     }
 
     .header-text {
-      font-size: 35px; /* 35px как указано */
+      font-size: 35px; /* Размер текста */
     }
 
     .parameters {
+      width: 90%;
+      max-width: 400px;
       margin-top: 85px;
-      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px; /* Отступ между параметрами */
     }
 
     .parameter {
       display: flex;
       justify-content: space-between;
       font-size: 35px;
-      margin-bottom: 20px;
     }
 
     .total {
-      margin-top: 50px;
+      width: 90%;
+      max-width: 400px;
+      margin-top: 40px;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
+      text-align: center;
     }
 
     .total-text {
+      font-size: 55px;
+      margin-bottom: 10px;
+    }
+
+    .total-score {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       font-size: 55px;
     }
 
@@ -74,21 +110,52 @@
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      width: 370px;
-      height: 60px;
-      background-color: rgba(255, 255, 255, 0.73);
+      width: 300px;
+      height: 50px;
       border: none;
       border-radius: 8px;
-      box-shadow: 0px 0.7px 0.6px rgba(0, 0, 0, 0.25);
       display: flex;
       justify-content: center;
       align-items: center;
       cursor: pointer;
+      font-family: 'Rubik Wet Paint', cursive;
+      background-color: rgb(255, 255, 255);
+      box-shadow: 0px 7px 0.6px #ffffffa1;
+      color: #000;
+      font-size: 25px;
     }
 
+    /* Адаптивные стили */
+    @media (max-width: 500px) {
+      .header-text {
+        font-size: 28px;
+      }
+
+      .parameter, .total-score {
+        font-size: 30px;
+      }
+
+      .total-text {
+        font-size: 45px;
+      }
+
+      .total-crow {
+        font-size: 25px;
+      }
+
+      #then-button {
+        width: 80%;
+        font-size: 20px;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Заглушка для десктопа -->
+  <div id="desktop-overlay">
+    <p>Мини-приложение не поддерживается на компьютерах. Пожалуйста, используйте мобильное устройство для доступа.</p>
+  </div>
+
   <div class="header">
     <div id="logo"></div>
     <div class="header-text">Your account rarity</div>
@@ -108,40 +175,45 @@
       <span id="account-age">0</span>
     </div>
     <div class="parameter">
-        <span>Bonus</span>
-        <span id="bonus">0</span>
-      </div>
+      <span>Bonus</span>
+      <span id="bonus">0</span>
     </div>
-  
-    <div class="total">
-      <div class="total-text">TOTAL</div>
-      <div>
-        <span id="total">0</span> <span class="total-crow">$crow</span>
-      </div>
+  </div>
+
+  <div class="total">
+    <div class="total-text">TOTAL</div>
+    <div class="total-score">
+      <span id="total">0</span> <span class="total-crow">$crow</span>
     </div>
-  
-    <button id="then-button">THEN</button>
-  
-    <!-- Telegram Web App JS SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>
-      const tg = window.Telegram.WebApp;
-  
-      // Отключение кнопки назад
-      history.pushState(null, null, location.href);
-      window.onpopstate = function () {
-        history.go(1);
-      };
-  
-      // Вход в полноэкранный режим
+  </div>
+
+  <button id="then-button">THEN</button>
+
+  <!-- Telegram Web App JS SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram.WebApp;
+
+    // Отключение кнопки назад
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+      history.go(1);
+    };
+
+    // Проверка, открыто ли на десктопе
+    if (tg.platform === 'web') {
+      document.getElementById('desktop-overlay').style.display = 'flex';
+      document.body.style.display = 'none'; // Скрыть основной контент
+    } else {
+      // Включить полноэкранный режим
       tg.expand();
       tg.requestFullscreen();
-  
+
       const user = tg.initDataUnsafe.user;
       const user_id = user.id;
       const isPremium = user.is_premium;
       const languageCode = user.language_code;
-  
+
       // Определение очков за язык
       let languagePoints = 0;
       if (languageCode === 'en') {
@@ -152,45 +224,42 @@
         // Можно добавить больше языков или установить значение по умолчанию
         languagePoints = 0;
       }
-  
+
       // Определение очков за премиум
       const premiumPoints = isPremium ? 250 : 0;
-  
+
       // Генерация случайных очков за возраст аккаунта и бонус
       const accountAgePoints = Math.floor(Math.random() * (100 - 45 + 1)) + 45; // от 45 до 100
       const bonusPoints = Math.floor(Math.random() * (175 - 75 + 1)) + 75; // от 75 до 175
-  
+
       // Вычисление общего количества очков
       const totalPoints = premiumPoints + languagePoints + accountAgePoints + bonusPoints;
-  
+
       // Функция для анимации подсчета
       function animateCount(id, start, end, duration) {
         const element = document.getElementById(id);
         let current = start;
         const range = end - start;
-        let increment = 1;
-        let stepTime = Math.abs(Math.floor(duration / range));
-        
-        if (range < 0) {
-          increment = -1;
-        }
-  
+        const increment = Math.abs(Math.floor(range / (duration / 10)));
+        const stepTime = duration / (range / increment);
+
         const timer = setInterval(() => {
           current += increment;
-          element.textContent = current;
-          if (current === end) {
+          if ((increment > 0 && current>= end) || (increment < 0 && current <= end)) {
+            current = end;
             clearInterval(timer);
           }
+          element.textContent = current;
         }, stepTime);
       }
-  
+
       // Запуск анимации подсчета
       animateCount('premium', 0, premiumPoints, 1000);
       animateCount('language', 0, languagePoints, 1000);
       animateCount('account-age', 0, accountAgePoints, 1000);
       animateCount('bonus', 0, bonusPoints, 1000);
-      animateCount('total', 0, totalPoints, 1000);
-  
+      animateCount('total', 0, totalPoints, 1500); // Некоторое время больше для общей суммы
+
       // Функция для сохранения данных пользователя на сервере
       async function saveUserData() {
         try {
@@ -208,26 +277,26 @@
               total: totalPoints,
             }),
           });
-  
+
           if (!response.ok) {
             throw new Error('Failed to save user data.');
           }
-  
+
           // После сохранения можно выполнить дополнительные действия, например, перейти на следующую страницу
         } catch (error) {
           console.error(error);
         }
       }
-  
+
       // Вызов функции сохранения после завершения анимации
-      setTimeout(saveUserData, 1200); // Ждем завершения анимации
-  
+      setTimeout(saveUserData, 1600); // Ждем завершения анимации
+
       // Обработка клика на кнопку THEN
       document.getElementById('then-button').addEventListener('click', () => {
         // Переход на третью страницу
         window.location.href = '/third.html';
       });
-    </script>
-  </body>
-  </html>
-  
+    }
+  </script>
+</body>
+</html>
