@@ -27,12 +27,13 @@
 
     /* Верхняя граница с градиентом */
     .top-gradient {
-      position: absolute;
-      top: 60px;
+      position: fixed;
+      top: 0;
       width: 100%;
       height: 60px;
-      background: linear-gradient(90deg, #252525 0%, #272727 100%);
-      border-radius: 30px;
+      background: linear-gradient(90deg, #1E3C72 0%, #2A5298 100%);
+      border-bottom-left-radius: 30px;
+      border-bottom-right-radius: 30px;
       display: flex;
       align-items: center;
       padding: 0 20px;
@@ -42,7 +43,6 @@
 
     /* Верхняя панель с аватаркой и именем */
     .top-panel {
-      position: relative;
       display: flex;
       align-items: center;
       color: #fff;
@@ -52,10 +52,11 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background-image: url('avatar.png'); /* Замените на путь к аватарке */
       background-size: cover;
       background-position: center;
       margin-right: 10px;
+      flex-shrink: 0;
+      background-image: url('default-avatar.png'); /* Файл-заглушка, замените на аватарку пользователя */
     }
 
     .user-info {
@@ -75,17 +76,17 @@
 
     /* Центральный контент */
     .central-content {
-      margin-top: 80px; /* Отступ от верхней границы */
+      margin-top: 100px; /* Отступ от верхней границы */
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
       flex-grow: 1;
+      padding: 0 20px;
+      box-sizing: border-box;
     }
 
     #logo {
-      position: relative;
-      top: 90px;
       width: 150px;
       height: 150px;
       background-image: url('logo.png'); /* Замените на путь к вашему логотипу */
@@ -95,25 +96,19 @@
     }
 
     .crow-text {
-      position: relative;
-      top: 95px;
-      font-family: 'Rubik Wet Paint';
+      font-family: 'Rubik Light', sans-serif;
       font-size: 35px;
       margin-bottom: 10px;
     }
 
     .balance-text {
-      position: relative;
-      top: 95px;
-      font-family: 'Rubik Wet Paint';
-      font-size: 75px;
+      font-family: 'Rubik Light', sans-serif;
+      font-size: 35px;
       margin-bottom: 30px;
     }
 
     /* Кнопка Boost */
     #boost-button {
-      position: relative;
-      top: 350px;
       width: 250px;
       height: 60px;
       background-color: #FF1E1D;
@@ -123,8 +118,13 @@
       font-family: 'Inknut Antiqua', serif;
       font-size: 25px;
       cursor: pointer;
-      margin-bottom: -10px;
-      z-index: 5;
+      box-shadow: 0px 7px 0.6px #ffffffa1;
+      margin-bottom: 20px;
+      transition: background-color 0.3s;
+    }
+
+    #boost-button:hover {
+      background-color: #e01d1c;
     }
 
     /* Панель навигации */
@@ -132,7 +132,7 @@
       position: fixed;
       bottom: 0;
       width: 100%;
-      height: 100px;
+      height: 80px;
       background-color: rgba(21, 21, 21, 0.8);
       display: flex;
       justify-content: space-around;
@@ -151,19 +151,19 @@
       color: #969696;
       cursor: pointer;
       position: relative;
+      transition: color 0.3s;
     }
 
     .nav-item.active {
       color: #ffffff;
     }
 
-
     /* Цветные кружки под навигационной панелью */
     .background-circles {
       position: fixed;
-      bottom: 0px; /* Над панелью навигации */
+      bottom: 80px; /* Над панелью навигации */
       width: 100%;
-      height: 100px;
+      height: 150px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -507,11 +507,16 @@
         // Добавление класса active к выбранному пункту
         item.classList.add('active');
 
-        // Здесь можно добавить переключение контента или другие действия
+        // Здесь можно добавить переключение контента илидругие действия
         const selected = item.querySelector('span').textContent;
         alert(`Вы выбрали: ${selected}`);
       });
     });
+
+    // Защита от случайного закрытия при пролистывании
+    document.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+    }, { passive: false });
   </script>
 </body>
 </html>
