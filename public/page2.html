@@ -46,6 +46,8 @@
     }
 
     .header {
+      position: relative;
+      top: 55px;
       display: flex;
       align-items: center;
       margin: 20px 0;
@@ -123,7 +125,10 @@
       box-shadow: 0px 7px 0.6px #ffffffa1;
       color: #000;
       font-size: 25px;
-    }
+    } 
+    .score{
+        font-size: 50px;
+      }
 
     /* Адаптивные стили */
     @media (max-width: 500px) {
@@ -182,12 +187,14 @@
 
   <div class="total">
     <div class="total-text">TOTAL</div>
-    <div class="total-score">
-      <span id="total">0</span> <span class="total-crow">$crow</span>
+    <div>
+      <span id="total" class="score">0</span> <span class="total-crow">$crow</span>
     </div>
   </div>
 
-  <button id="then-button">THEN</button>
+  <button id="then-button">
+    <span>THEN</span>
+  </button>
 
   <!-- Telegram Web App JS SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -200,103 +207,100 @@
       history.go(1);
     };
 
-    // Проверка, открыто ли на десктопе
-    if (tg.platform === 'web') {
-      document.getElementById('desktop-overlay').style.display = 'flex';
-      document.body.style.display = 'none'; // Скрыть основной контент
+    // Вход в полноэкранный режим
+    tg.expand();
+    tg.requestFullscreen();
+
+    const user = tg.initDataUnsafe.user;
+    const user_id = user.id;
+    const isPremium = user.is_premium;
+    const languageCode = user.language_code;
+
+    // Определение очков за язык
+    let languagePoints = 0;
+    if (languageCode === 'en') {
+      languagePoints = 75;
+    } else if (languageCode === 'ru') {
+      languagePoints = 85;
     } else {
-      // Включить полноэкранный режим
-      tg.expand();
-      tg.requestFullscreen();
-
-      const user = tg.initDataUnsafe.user;
-      const user_id = user.id;
-      const isPremium = user.is_premium;
-      const languageCode = user.language_code;
-
-      // Определение очков за язык
-      let languagePoints = 0;
-      if (languageCode === 'en') {
-        languagePoints = 75;
-      } else if (languageCode === 'ru') {
-        languagePoints = 85;
-      } else {
-        // Можно добавить больше языков или установить значение по умолчанию
-        languagePoints = 0;
-      }
-
-      // Определение очков за премиум
-      const premiumPoints = isPremium ? 250 : 0;
-
-      // Генерация случайных очков за возраст аккаунта и бонус
-      const accountAgePoints = Math.floor(Math.random() * (100 - 45 + 1)) + 45; // от 45 до 100
-      const bonusPoints = Math.floor(Math.random() * (175 - 75 + 1)) + 75; // от 75 до 175
-
-      // Вычисление общего количества очков
-      const totalPoints = premiumPoints + languagePoints + accountAgePoints + bonusPoints;
-
-      // Функция для анимации подсчета
-      function animateCount(id, start, end, duration) {
-        const element = document.getElementById(id);
-        let current = start;
-        const range = end - start;
-        const increment = Math.abs(Math.floor(range / (duration / 10)));
-        const stepTime = duration / (range / increment);
-
-        const timer = setInterval(() => {
-          current += increment;
-          if ((increment > 0 && current>= end) || (increment < 0 && current <= end)) {
-            current = end;
-            clearInterval(timer);
-          }
-          element.textContent = current;
-        }, stepTime);
-      }
-
-      // Запуск анимации подсчета
-      animateCount('premium', 0, premiumPoints, 1000);
-      animateCount('language', 0, languagePoints, 1000);
-      animateCount('account-age', 0, accountAgePoints, 1000);
-      animateCount('bonus', 0, bonusPoints, 1000);
-      animateCount('total', 0, totalPoints, 1500); // Некоторое время больше для общей суммы
-
-      // Функция для сохранения данных пользователя на сервере
-      async function saveUserData() {
-        try {
-          const response = await fetch('/save-user-data', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              user_id: user_id,
-              premium: premiumPoints,
-              language: languagePoints,
-              account_age: accountAgePoints,
-              bonus: bonusPoints,
-              total: totalPoints,
-            }),
-          });
-
-          if (!response.ok) {
-            throw new Error('Failed to save user data.');
-          }
-
-          // После сохранения можно выполнить дополнительные действия, например, перейти на следующую страницу
-        } catch (error) {
-          console.error(error);
-        }
-      }
-
-      // Вызов функции сохранения после завершения анимации
-      setTimeout(saveUserData, 1600); // Ждем завершения анимации
-
-      // Обработка клика на кнопку THEN
-      document.getElementById('then-button').addEventListener('click', () => {
-        // Переход на третью страницу
-        window.location.href = '/third.html';
-      });
+      // Можно добавить больше языков или установить значение по умолчанию
+      languagePoints = 0;
     }
+
+    // Определение очков за премиум
+    const premiumPoints = isPremium ? 250 : 0;
+
+    // Генерация случайных очков за возраст аккаунта и бонус
+    const accountAgePoints = Math.floor(Math.random() * (100 - 45 + 1)) + 45; // от 45 до 100
+    const bonusPoints = Math.floor(Math.random() * (175 - 75 + 1)) + 75; // от 75 до 175
+
+    // Вычисление общего количества очков
+    const totalPoints = premiumPoints + languagePoints + accountAgePoints + bonusPoints;
+
+    // Функция для анимации подсчета
+    function animateCount(id, start, end, duration) {
+      const element = document.getElementById(id);
+      let current = start;
+      const range = end - start;
+      let increment = 1;
+      let stepTime = Math.abs(Math.floor(duration / range));
+      
+      if (range < 0) {
+        increment = -1;
+      }
+
+      const timer = setInterval(() => {
+        current += increment;
+        element.textContent = current;
+        if (current === end) {
+          clearInterval(timer);
+        }
+      }, stepTime);
+    }
+
+    // Запуск анимации подсчета
+    animateCount('premium', 0, premiumPoints, 1000);
+    animateCount('language', 0, languagePoints, 1000);
+    animateCount('account-age', 0, accountAgePoints, 1000);
+    animateCount('bonus', 0, bonusPoints, 1000);
+    animateCount('total', 0, totalPoints, 1000);
+
+    // Функция для сохранения данных пользователя на сервере
+    async function saveUserData() {
+      try {
+        const response = await fetch('/save-user-data', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: user_id,
+            premium: premiumPoints,
+            language: languagePoints,
+            account_age: accountAgePoints,
+            bonus: bonusPoints,
+            total: totalPoints,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to save user data.');
+        }
+
+        // После сохранения можно выполнить дополнительные действия, например, перейти на следующую страницу
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Вызов функции сохранения после завершения анимации
+    setTimeout(saveUserData, 1200); // Ждем завершения анимации
+
+    // Обработка клика на кнопку THEN
+    document.getElementById('then-button').addEventListener('click', () => {
+      // Переход на третью страницу
+      window.location.href = '/third.html';
+    });
   </script>
 </body>
 </html>
