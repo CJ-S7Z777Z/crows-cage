@@ -172,49 +172,46 @@ app.post('/update-balance', async (req, res) => {
 
 // Маршрут для обработки Boost запросов
 app.post('/request-boost', async (req, res) => {
-  const { user_id, multiplier, price } = req.body;
-
-  if (!user_id || !multiplier || !price) {
-    return res.status(400).send('Invalid request.');
-  }
-
-  try {
-    const userData = await redis.get(`user:${user_id}`);
-    if (!userData) {
-      return res.status(404).send('User not found.');
+    const { user_id, multiplier, price } = req.body;
+  
+    if (!user_id || !multiplier || !price) {
+      return res.status(400).send('Invalid request.');
     }
-
-    // Проверяем наличие пользовательского чата
-    const chatId = user_id; // Предполагаем, что user_id соответствует chat_id для приватных чатов
-
-    // Формирование инвойса
-    const invoice = {
-      chat_id: chatId,
-      title: 'Boost Purchase',
-      description: `Purchase Boost x${multiplier}`,
-      payload: `boost_${multiplier}`,
-      provider_token: '', // Оставляем пустым, как вы указали. Обратите внимание, что Telegram требует валидный provider_token
-      currency: 'XTR',
-      prices: [
-        { label: `${multiplier}x Boost`, amount: price * 100 }, // amount в наименьших единицах (звезды)
-      ],
-      start_parameter: `boost_${multiplier}`,
-      photo_url: `${process.env.APP_URL}/logo.png`,
-      photo_width: 100,
-      photo_height: 100,
-      is_flexible: false,
-    };
-
-    // Отправка инвойса через бота
-    await bot.sendInvoice(invoice);
-
-    res.status(200).send('Invoice sent.');
-  } catch (error) {
-    console.error('Error sending invoice:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
+  
+    try {
+      const userData = await redis.get(`user:${user_id}`);
+      if (!userData) {
+        return res.status(404).send('User not found.');
+      }
+  
+      // Формирование инвойса
+      const invoice = {
+        chat_id: user_id, // Предполагается, что user_id соответствует chat_id для приватных чатов
+        title: 'Boost Purchase',
+        description: `Purchase Boost x${multiplier}`,
+        payload: `boost_${multiplier}`,
+        provider_token: providerToken, // Использование provider_token из .env
+        currency: 'XTR',
+        prices: [
+          { label: `${multiplier}x Boost`, amount: price }, // amount в XTR
+        ],
+        start_parameter: `boost_${multiplier}`,
+        photo_url: `${process.env.APP_URL}/logo.png`,
+        photo_width: 100,
+        photo_height: 100,
+        is_flexible: false,
+      };
+  
+      // Отправка инвойса через бота
+      await bot.sendInvoice(invoice);
+  
+      res.status(200).send('Invoice sent.');
+    } catch (error) {
+      console.error('Error sending invoice:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+  
 // Обработка pre_checkout_query
 bot.on('pre_checkout_query', async (query) => {
   try {
