@@ -1,6 +1,2 @@
-[build]
-  builder = "node"
-
 [deploy]
-  install = "npm install"
-  start = "npm start"
+start = "npm install && npm start"
