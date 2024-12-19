@@ -1,0 +1,44 @@
+<!-- public/page2.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Crow Cage - Account Rarity</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="header">
+            <img src="assets/logo.png" alt="Logo" class="small-logo">
+            <span class="header-text">Your account rarity</span>
+        </div>
+        <div class="params-container">
+            <div class="param">
+                <span>Premium</span>
+                <span id="premium">0</span>
+            </div>
+            <div class="param">
+                <span>Language</span>
+                <span id="language">0</span>
+            </div>
+            <div class="param">
+                <span>Account age</span>
+                <span id="accountAge">0</span>
+            </div>
+            <div class="param">
+                <span>Bonus</span>
+                <span id="bonus">0</span>
+            </div>
+            <div class="total">
+                <span>TOTAL</span>
+                <span id="total">0 $crow</span>
+            </div>
+        </div>
+        <button id="thenButton" class="then-button">THEN</button>
+    </div>
+
+    <script src="page2.js"></script>
+</body>
+</html>
