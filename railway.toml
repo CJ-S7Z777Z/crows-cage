@@ -3,4 +3,4 @@
 
 
 [deploy]
-  startCommand = "node index.js"
+  startCommand = "node server.js"
