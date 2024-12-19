@@ -1,10 +1,6 @@
-   [build]
-     # Используем Node.js buildpack
-     builder = "heroku/buildpacks:20"
+[build]
+  builder = "node"
 
-   [deploy]
-     # Команда для установки зависимостей
-     install = "npm install"
-
-     # Команда для запуска приложения
-     start = "npm start"
+[deploy]
+  install = "npm install"
+  start = "npm start"
